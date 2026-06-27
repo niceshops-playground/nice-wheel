@@ -1,13 +1,18 @@
 import { useState, type FormEvent } from "react";
 
-export function NameInput({ onAdd }: { onAdd: (name: string) => void }) {
+export function NameInput({
+  onAdd,
+  disabled = false,
+}: {
+  onAdd: (name: string) => void;
+  disabled?: boolean;
+}) {
   const [value, setValue] = useState("");
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    const name = value.trim();
-    if (!name) return;
-    onAdd(name);
+    if (!value.trim()) return;
+    onAdd(value);
     setValue("");
   }
 
@@ -19,9 +24,10 @@ export function NameInput({ onAdd }: { onAdd: (name: string) => void }) {
         placeholder="Add a name…"
         value={value}
         maxLength={40}
+        disabled={disabled}
         onChange={(e) => setValue(e.target.value)}
       />
-      <button type="submit" disabled={!value.trim()}>
+      <button type="submit" disabled={disabled || !value.trim()}>
         Add
       </button>
     </form>

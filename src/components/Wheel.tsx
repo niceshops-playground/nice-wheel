@@ -1,8 +1,20 @@
+import { useMemo } from "react";
 import { buildSegments } from "../lib/wheel";
 
 const SIZE = 360;
 const CENTER = SIZE / 2;
 const RADIUS = SIZE / 2 - 4;
+const LABEL_RADIUS = RADIUS * 0.62;
+const MAX_LABEL_CHARS = 14;
+
+// Font size shrinks as more names crowd the wheel, clamped to a readable range.
+function labelFontSize(count: number): number {
+  return Math.max(11, Math.min(20, 220 / count));
+}
+
+function truncate(name: string): string {
+  return name.length > MAX_LABEL_CHARS ? `${name.slice(0, MAX_LABEL_CHARS - 1)}…` : name;
+}
 
 /** Polar → cartesian with 0° at the top, increasing clockwise. */
 function point(angle: number, radius: number) {
@@ -29,8 +41,9 @@ interface WheelProps {
 }
 
 export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelProps) {
-  const segments = buildSegments(names);
+  const segments = useMemo(() => buildSegments(names), [names]);
   const single = segments.length === 1;
+  const fontSize = labelFontSize(names.length);
 
   return (
     <div className="wheel">
@@ -48,10 +61,10 @@ export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelPro
         }}
         onTransitionEnd={() => spinning && onSpinEnd()}
       >
-        {segments.map((seg, i) => {
-          const label = point(seg.midAngle, RADIUS * 0.62);
+        {segments.map((seg) => {
+          const label = point(seg.midAngle, LABEL_RADIUS);
           return (
-            <g key={`${seg.name}-${i}`}>
+            <g key={seg.name}>
               {single ? (
                 <circle cx={CENTER} cy={CENTER} r={RADIUS} fill={seg.color} />
               ) : (
@@ -61,13 +74,13 @@ export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelPro
                 x={label.x}
                 y={label.y}
                 fill="#fff"
-                fontSize={Math.max(11, Math.min(20, 220 / names.length))}
+                fontSize={fontSize}
                 fontWeight={700}
                 textAnchor="middle"
                 dominantBaseline="middle"
                 transform={`rotate(${seg.midAngle} ${label.x} ${label.y})`}
               >
-                {seg.name.length > 14 ? `${seg.name.slice(0, 13)}…` : seg.name}
+                {truncate(seg.name)}
               </text>
             </g>
           );

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   segmentAngle,
+  segmentColors,
   buildSegments,
   winnerIndexForRotation,
   rotationForWinner,
@@ -43,6 +44,21 @@ describe("buildSegments", () => {
       expect(many[i].color).toMatch(/^#[0-9A-Fa-f]{6}$/);
       const next = many[(i + 1) % many.length];
       expect(many[i].color).not.toBe(next.color);
+    }
+  });
+});
+
+describe("segmentColors", () => {
+  it("never repeats a colour on adjacent slices, including the wrap-around", () => {
+    for (let count = 1; count <= 30; count++) {
+      const colors = segmentColors(count);
+      expect(colors).toHaveLength(count);
+      for (let i = 0; i < count; i++) {
+        expect(colors[i]).toMatch(/^#[0-9A-Fa-f]{6}$/);
+        if (count > 1) {
+          expect(colors[i]).not.toBe(colors[(i + 1) % count]);
+        }
+      }
     }
   });
 });

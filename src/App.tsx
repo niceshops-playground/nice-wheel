@@ -65,8 +65,13 @@ export function App() {
         </section>
 
         <aside className="app__panel">
-          <NameInput onAdd={add} />
-          <NameList names={names} onRemove={remove} onClear={clear} />
+          <NameInput onAdd={add} disabled={spinning} />
+          <NameList
+            names={names}
+            onRemove={remove}
+            onClear={clear}
+            disabled={spinning}
+          />
         </aside>
       </main>
 

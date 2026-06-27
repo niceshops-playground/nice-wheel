@@ -75,6 +75,42 @@ describe("App", () => {
     );
   });
 
+  it("locks the name panel while spinning so the winner can't be invalidated", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    for (const name of ["Anna", "Ben", "Cleo"]) {
+      await user.type(screen.getByLabelText("Add a name"), name);
+      await user.click(screen.getByRole("button", { name: "Add" }));
+    }
+
+    await user.click(screen.getByRole("button", { name: "Spin" }));
+
+    expect(screen.getByLabelText("Add a name")).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Add" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Remove Anna" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Clear all" })).toBeDisabled();
+
+    // After the spin settles, the panel is interactive again.
+    fireEvent.transitionEnd(screen.getByLabelText(/Wheel with/));
+    await screen.findByRole("dialog", { name: "Winner" });
+    expect(screen.getByLabelText("Add a name")).toBeEnabled();
+  });
+
+  it("dismisses the winner modal with the Escape key", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    for (const name of ["Anna", "Ben"]) {
+      await user.type(screen.getByLabelText("Add a name"), name);
+      await user.click(screen.getByRole("button", { name: "Add" }));
+    }
+    await user.click(screen.getByRole("button", { name: "Spin" }));
+    fireEvent.transitionEnd(screen.getByLabelText(/Wheel with/));
+    await screen.findByRole("dialog", { name: "Winner" });
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Winner" })).not.toBeInTheDocument();
+  });
+
   it("persists names to sessionStorage", async () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);

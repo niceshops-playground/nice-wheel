@@ -29,18 +29,21 @@ export function segmentAngle(count: number): number {
   return 360 / count;
 }
 
-/** Cycle the palette, nudging the final colour so it never matches its neighbour on wrap-around. */
+/**
+ * Cycle the palette, but never let a slice share a colour with the slice before
+ * it — including the wrap-around from the last slice back to the first. With a
+ * palette of 3+ colours a non-clashing choice always exists.
+ */
 export function segmentColors(count: number): string[] {
-  const colors = Array.from(
-    { length: count },
-    (_, i) => PALETTE[i % PALETTE.length],
-  );
-  if (count > 1 && colors[count - 1] === colors[0]) {
-    colors[count - 1] = PALETTE[(count - 2) % PALETTE.length];
-    // Guard the (now shifted) last-vs-second-last neighbour too.
-    if (count > 2 && colors[count - 1] === colors[count - 2]) {
-      colors[count - 1] = PALETTE[(count + 1) % PALETTE.length];
-    }
+  const colors: string[] = [];
+  for (let i = 0; i < count; i++) {
+    const prev = colors[i - 1];
+    const wrapsToFirst = i === count - 1;
+    const clashes = (c: string) => c === prev || (wrapsToFirst && c === colors[0]);
+
+    let color = PALETTE[i % PALETTE.length];
+    if (clashes(color)) color = PALETTE.find((c) => !clashes(c)) ?? color;
+    colors.push(color);
   }
   return colors;
 }
