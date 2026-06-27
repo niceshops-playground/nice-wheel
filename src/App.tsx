@@ -4,7 +4,9 @@ import { Wheel } from "./components/Wheel";
 import { NameInput } from "./components/NameInput";
 import { NameList } from "./components/NameList";
 import { WinnerModal } from "./components/WinnerModal";
+import { ThemeToggle } from "./components/ThemeToggle";
 import { useNames } from "./hooks/useNames";
+import { useTheme } from "./hooks/useTheme";
 import { pickWinnerIndex, rotationForWinner } from "./lib/wheel";
 
 const SPIN_MS = 5000;
@@ -12,6 +14,7 @@ const SPINS = 6;
 
 export function App() {
   const { names, add, remove, clear } = useNames();
+  const { theme, toggle } = useTheme();
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState<string | null>(null);
@@ -35,13 +38,16 @@ export function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <span className="app__brand" aria-hidden="true">
-          <Logo size={34} />
-        </span>
-        <div className="app__title">
-          <h1>Wheel of Names</h1>
-          <p>niceshops edition</p>
+        <div className="app__lockup">
+          <span className="app__brand" aria-hidden="true">
+            <Logo size={34} />
+          </span>
+          <div className="app__title">
+            <h1>Wheel of Names</h1>
+            <p>niceshops edition</p>
+          </div>
         </div>
+        <ThemeToggle theme={theme} onToggle={toggle} />
       </header>
 
       <main className="app__main">

@@ -11,12 +11,15 @@ smiley.
 - 🎨 Every name gets its own slice in the orange palette
 - 🌀 Smooth spin animation that lands on a random winner
 - 🎉 Winner reveal with confetti and a bouncing smiley
+- 🌗 Light & dark themes with a toggle (remembers your choice, follows the OS by default)
+- 📲 Installable **PWA** — add to home screen and it works offline
 - ♿ Respects `prefers-reduced-motion`
 
 ## Tech
 
-Vite · React 19 · TypeScript · Vitest + Testing Library. The wheel geometry and
-winner maths live in `src/lib/` as pure, fully unit-tested functions.
+Vite · React 19 · TypeScript · Vitest + Testing Library · `vite-plugin-pwa`
+(Workbox) for the offline service worker. The wheel geometry and winner maths
+live in `src/lib/` as pure, fully unit-tested functions.
 
 ## Develop
 
@@ -38,6 +41,12 @@ npm run build    # type-check + production build
 - **The logo** (`src/components/Logo.tsx`) is the official niceshops smiley
   mark as an inline SVG that inherits `currentColor`, so it recolours to fit the
   header chip, the wheel hub, and the winner card.
+- **Theming** lives in `src/hooks/useTheme.ts`: it persists the choice to
+  `localStorage`, falls back to the OS `prefers-color-scheme`, and an inline
+  boot script in `index.html` applies it before first paint to avoid a flash.
+  All colours are CSS custom properties switched by `[data-theme]`.
+- **PWA**: `vite-plugin-pwa` generates `manifest.webmanifest` and a Workbox
+  service worker that precaches the app shell. Icons are in `public/`.
 
 ## Deployment
 
