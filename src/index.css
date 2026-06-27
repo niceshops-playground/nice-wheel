@@ -87,6 +87,7 @@ body {
   background: var(--page-bg);
   background-attachment: fixed;
   min-height: 100vh;
+  min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
   transition: color 0.3s ease, background-color 0.3s ease;
 }
@@ -130,9 +131,13 @@ body {
   color: var(--accent);
 }
 
-.app__lockup h1 {
+.app__title {
+  min-width: 0;
+}
+
+.app__title h1 {
   margin: 0;
-  font-size: clamp(1.15rem, 4.5vw, 1.4rem);
+  font-size: clamp(1.15rem, 4.5vw, 1.45rem);
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.1;
@@ -141,6 +146,15 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.app__title p {
+  margin: 1px 0 0;
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.4px;
+  text-transform: lowercase;
 }
 
 .theme-toggle {
@@ -173,11 +187,8 @@ body {
   align-items: start;
 }
 
-@media (max-width: 760px) {
-  .app__main {
-    grid-template-columns: 1fr;
-  }
-}
+/* Mobile layout overrides live at the END of this file so they win on
+   source order (see the @media block after the keyframes). */
 
 .app__wheel {
   display: flex;
@@ -190,7 +201,8 @@ body {
 /* ---------- Wheel ---------- */
 .wheel {
   position: relative;
-  width: min(360px, 80vw);
+  /* Scale to the smaller of width and height so it always fits the screen. */
+  width: min(360px, 80vw, 52svh);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -605,5 +617,50 @@ body {
   .winner__confetti span {
     animation: none !important;
     transition-duration: 0.3s !important;
+  }
+}
+
+/* ---------- Mobile layout (placed last so it wins on source order) ---------- */
+@media (max-width: 760px) {
+  .app {
+    padding-top: max(14px, env(safe-area-inset-top));
+    padding-bottom: 28px;
+  }
+
+  .app__header {
+    margin-bottom: 12px;
+  }
+
+  .app__main {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .app__wheel {
+    gap: 16px;
+    padding-top: 0;
+  }
+
+  /* Scale the wheel to the smaller of width and viewport height so the
+     wheel + Spin button always fit the first screen. */
+  .wheel {
+    width: min(78vw, 44svh);
+  }
+
+  .spin-btn {
+    padding: 13px 46px;
+  }
+
+  .app__panel {
+    padding: 18px;
+  }
+
+  /* Cap the list so it scrolls inside the panel instead of pushing the page. */
+  .name-list ul {
+    max-height: 34vh;
+  }
+
+  .app__footer {
+    margin-top: 24px;
   }
 }
