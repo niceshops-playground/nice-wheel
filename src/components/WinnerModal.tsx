@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Smiley } from "./Smiley";
+import { Logo } from "./Logo";
 
 const CONFETTI = Array.from({ length: 24 }, (_, i) => i);
 
@@ -32,7 +32,7 @@ export function WinnerModal({
         ))}
       </div>
       <div className="winner__card" onClick={(e) => e.stopPropagation()}>
-        <Smiley size={72} className="winner__smiley" />
+        <Logo size={64} className="winner__smiley" />
         <p className="winner__label">Winner</p>
         <h2 className="winner__name">{winner}</h2>
         <button type="button" onClick={onClose}>

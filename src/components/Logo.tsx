@@ -1,0 +1,35 @@
+/**
+ * The official niceshops smiley mark — an open ring face with two eyes and a
+ * grin. Drawn as a single path that inherits `currentColor`, so colour is set
+ * by the surrounding CSS (`color`). Aspect ratio is preserved from the source.
+ */
+const RATIO = 52.437 / 56.654;
+
+export function Logo({ size = 48, className }: { size?: number; className?: string }) {
+  return (
+    <svg
+      width={size * RATIO}
+      height={size}
+      viewBox="0 0 52.437 56.654"
+      fill="currentColor"
+      role="img"
+      aria-label="niceshops"
+      className={className}
+    >
+      <g transform="translate(-201.129 -214.732)">
+        <circle cx="2.387" cy="2.387" r="2.387" transform="translate(217.014 237.509)" />
+        <circle
+          cx="2.387"
+          cy="2.387"
+          r="2.387"
+          transform="matrix(0.967,-0.253,0.253,0.967,234.419,233.236)"
+        />
+        <path d="M236.9,270.332a28.028,28.028,0,0,1-34.8-19.843,28.436,28.436,0,0,1,20.179-34.734c6.924-1.855,13.179-1.206,20.284,2.1a1.162,1.162,0,0,1,.594,1.414l-.027.068-.251.544a1.1,1.1,0,0,1-1.56.468c-6.3-3.038-11.967-3.643-18.328-1.939a25.681,25.681,0,0,0-18.23,31.361,25.471,25.471,0,0,0,46.267,6.731,1.154,1.154,0,0,1,.793-.542,1,1,0,0,1,.8.208l.468.33a1.041,1.041,0,0,1,.336,1.424A27.236,27.236,0,0,1,236.9,270.332Z" />
+        <path
+          d="M232.793,231.237l-1.434-.441a.715.715,0,0,0-.839.5,11.5,11.5,0,0,1-7.528,6.638h0l-.037.01h0a11.5,11.5,0,0,1-9.838-1.983.714.714,0,0,0-.975-.01l-1.02,1.1a.572.572,0,0,0,0,.849,14.061,14.061,0,0,0,22.1-5.919A.571.571,0,0,0,232.793,231.237Z"
+          transform="translate(9.238 15.129)"
+        />
+      </g>
+    </svg>
+  );
+}

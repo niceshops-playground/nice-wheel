@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { buildSegments } from "../lib/wheel";
+import { Logo } from "./Logo";
 
 const SIZE = 360;
 const CENTER = SIZE / 2;
@@ -87,7 +88,9 @@ export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelPro
         })}
         <circle cx={CENTER} cy={CENTER} r={RADIUS} fill="none" stroke="#E8620E" strokeWidth={4} />
       </svg>
-      <div className="wheel__hub" aria-hidden="true" />
+      <div className="wheel__hub" aria-hidden="true">
+        <Logo size={26} />
+      </div>
     </div>
   );
 }

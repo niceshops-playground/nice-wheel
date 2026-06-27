@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Smiley } from "./components/Smiley";
+import { Logo } from "./components/Logo";
 import { Wheel } from "./components/Wheel";
 import { NameInput } from "./components/NameInput";
 import { NameList } from "./components/NameList";
@@ -35,8 +35,10 @@ export function App() {
   return (
     <div className="app">
       <header className="app__header">
-        <Smiley size={44} />
-        <div>
+        <span className="app__brand" aria-hidden="true">
+          <Logo size={34} />
+        </span>
+        <div className="app__title">
           <h1>Wheel of Names</h1>
           <p>niceshops edition</p>
         </div>

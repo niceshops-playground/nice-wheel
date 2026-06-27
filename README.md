@@ -15,7 +15,7 @@ smiley.
 
 ## Tech
 
-Vite · React 18 · TypeScript · Vitest + Testing Library. The wheel geometry and
+Vite · React 19 · TypeScript · Vitest + Testing Library. The wheel geometry and
 winner maths live in `src/lib/` as pure, fully unit-tested functions.
 
 ## Develop
@@ -35,8 +35,9 @@ npm run build    # type-check + production build
   segments, picks a winner, and computes the exact rotation so that winner ends
   up under the top pointer. `winnerIndexForRotation` and `rotationForWinner` are
   round-trip tested so the wheel can never lie about who it landed on.
-- **The smiley** (`src/components/Smiley.tsx`) is an original SVG drawn in the
-  niceshops style — swap in an official asset any time.
+- **The logo** (`src/components/Logo.tsx`) is the official niceshops smiley
+  mark as an inline SVG that inherits `currentColor`, so it recolours to fit the
+  header chip, the wheel hub, and the winner card.
 
 ## Deployment
 
