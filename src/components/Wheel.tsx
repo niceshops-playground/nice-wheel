@@ -64,6 +64,9 @@ export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelPro
       >
         {segments.map((seg) => {
           const label = point(seg.midAngle, LABEL_RADIUS);
+          // Flip labels on the bottom half so the text never reads upside-down.
+          const upsideDown = seg.midAngle > 90 && seg.midAngle < 270;
+          const labelAngle = upsideDown ? seg.midAngle + 180 : seg.midAngle;
           return (
             <g key={seg.name}>
               {single ? (
@@ -79,7 +82,7 @@ export function Wheel({ names, rotation, spinning, spinMs, onSpinEnd }: WheelPro
                 fontWeight={700}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                transform={`rotate(${seg.midAngle} ${label.x} ${label.y})`}
+                transform={`rotate(${labelAngle} ${label.x} ${label.y})`}
               >
                 {truncate(seg.name)}
               </text>
