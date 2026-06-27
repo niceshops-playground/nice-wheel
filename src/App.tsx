@@ -40,12 +40,9 @@ export function App() {
       <header className="app__header">
         <div className="app__lockup">
           <span className="app__brand" aria-hidden="true">
-            <Logo size={34} />
+            <Logo size={30} />
           </span>
-          <div className="app__title">
-            <h1>Wheel of Names</h1>
-            <p>niceshops edition</p>
-          </div>
+          <h1>Wheel of Names</h1>
         </div>
         <ThemeToggle theme={theme} onToggle={toggle} />
       </header>

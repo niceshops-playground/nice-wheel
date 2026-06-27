@@ -77,6 +77,8 @@ html,
 body {
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
@@ -113,47 +115,32 @@ body {
 .app__lockup {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
 }
 
 .app__brand {
   display: grid;
   place-items: center;
-  width: 54px;
-  height: 54px;
-  border-radius: 17px;
-  color: #fff;
-  background: linear-gradient(145deg, var(--accent-light), var(--accent-deep));
-  box-shadow:
-    0 10px 22px rgba(232, 98, 14, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  color: var(--accent-deep);
   flex: none;
 }
 
-.app__title {
-  min-width: 0;
+[data-theme="dark"] .app__brand {
+  color: var(--accent);
 }
 
-.app__title h1 {
+.app__lockup h1 {
   margin: 0;
-  font-size: clamp(1.5rem, 5vw, 2.1rem);
+  font-size: clamp(1.15rem, 4.5vw, 1.4rem);
   font-weight: 800;
-  letter-spacing: -0.6px;
-  line-height: 1.05;
+  letter-spacing: -0.4px;
+  line-height: 1.1;
+  white-space: nowrap;
   background: linear-gradient(135deg, var(--accent-deep), var(--accent-light));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-.app__title p {
-  margin: 2px 0 0;
-  color: var(--text-dim);
-  font-weight: 600;
-  font-size: 0.82rem;
-  letter-spacing: 0.4px;
-  text-transform: lowercase;
 }
 
 .theme-toggle {
@@ -203,7 +190,7 @@ body {
 /* ---------- Wheel ---------- */
 .wheel {
   position: relative;
-  width: min(380px, 86vw);
+  width: min(360px, 80vw);
   aspect-ratio: 1;
   display: grid;
   place-items: center;
@@ -213,7 +200,7 @@ body {
 .wheel::before {
   content: "";
   position: absolute;
-  inset: -9%;
+  inset: -7%;
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,
