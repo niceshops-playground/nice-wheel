@@ -3,6 +3,7 @@ import { Logo } from "./components/Logo";
 import { Wheel } from "./components/Wheel";
 import { NameInput } from "./components/NameInput";
 import { NameList } from "./components/NameList";
+import { ShareBar } from "./components/ShareBar";
 import { WinnerModal } from "./components/WinnerModal";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { useNames } from "./hooks/useNames";
@@ -13,7 +14,7 @@ const SPIN_MS = 5000;
 const SPINS = 6;
 
 export function App() {
-  const { names, add, remove, clear } = useNames();
+  const { names, team, setTeam, add, remove, clear } = useNames();
   const { theme, toggle } = useTheme();
   const [rotation, setRotation] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -43,8 +44,8 @@ export function App() {
             <Logo size={34} />
           </span>
           <div className="app__title">
-            <h1>Wheel of Names</h1>
-            <p>niceshops edition</p>
+            <h1>{team || "Wheel of Names"}</h1>
+            <p>{team ? "Wheel of Names — niceshops edition" : "niceshops edition"}</p>
           </div>
         </div>
         <ThemeToggle theme={theme} onToggle={toggle} />
@@ -73,6 +74,12 @@ export function App() {
         </section>
 
         <aside className="app__panel">
+          <ShareBar
+            team={team}
+            names={names}
+            onTeamChange={setTeam}
+            disabled={spinning}
+          />
           <NameInput onAdd={add} disabled={spinning} />
           <NameList
             names={names}
@@ -86,7 +93,7 @@ export function App() {
       {winner && <WinnerModal winner={winner} onClose={() => setWinner(null)} />}
 
       <footer className="app__footer">
-        Names are kept in this browser session only.
+        Names live in the page URL — copy the share link to send this wheel.
       </footer>
     </div>
   );

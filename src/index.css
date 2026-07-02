@@ -322,6 +322,61 @@ body {
   box-shadow: var(--shadow), inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
+.share-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.share-bar__team {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--input-bg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.share-bar__team::placeholder {
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+.share-bar__team:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(243, 146, 0, 0.2);
+}
+
+.share-btn {
+  padding: 0 16px;
+  border: 1.5px solid var(--accent);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--accent-deep);
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.share-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: var(--accent);
+  color: #fff;
+}
+
+.share-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .name-input {
   display: flex;
   gap: 8px;

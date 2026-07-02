@@ -4,7 +4,9 @@ import userEvent from "@testing-library/user-event";
 import { App } from "./App";
 
 beforeEach(() => {
-  sessionStorage.clear();
+  // The wheel state lives in the URL now — reset it so tests don't leak into
+  // one another.
+  window.history.replaceState(null, "", "/");
 });
 
 describe("App", () => {
@@ -111,14 +113,25 @@ describe("App", () => {
     expect(screen.queryByRole("dialog", { name: "Winner" })).not.toBeInTheDocument();
   });
 
-  it("persists names to sessionStorage", async () => {
+  it("persists names in the URL across reloads", async () => {
     const user = userEvent.setup();
     const { unmount } = render(<App />);
     await user.type(screen.getByLabelText("Add a name"), "Anna");
     await user.click(screen.getByRole("button", { name: "Add" }));
+    expect(window.location.search).toContain("names=Anna");
     unmount();
 
+    // Re-mounting reads the same URL — a shared link behaves identically.
     render(<App />);
     expect(screen.getByText("Names (1)")).toBeInTheDocument();
+  });
+
+  it("seeds team and names from the URL and shows the team as the title", () => {
+    window.history.replaceState(null, "", "/?team=Red+Team&names=Anna,Ben");
+    render(<App />);
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Red Team" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Names (2)")).toBeInTheDocument();
   });
 });
