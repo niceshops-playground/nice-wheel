@@ -1,34 +1,32 @@
 import { useCallback, useEffect, useState } from "react";
 import { addName, removeAt } from "../lib/names";
+import { decodeState, encodeState } from "../lib/share";
 
-const STORAGE_KEY = "won.names";
-
-/** Read the saved names from sessionStorage, tolerating absent/corrupt data. */
-function load(): string[] {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((n) => typeof n === "string") : [];
-  } catch {
-    return [];
-  }
+/** Seed state from the current URL (empty on the server / non-browser envs). */
+function loadFromUrl() {
+  if (typeof window === "undefined") return { team: "", names: [] as string[] };
+  return decodeState(window.location.search);
 }
 
 /**
- * Names list backed by sessionStorage — persists for the browser session
- * (tab), cleared when the tab closes.
+ * Team name + names list backed by the URL query string. The current wheel is
+ * therefore always shareable: copy the address bar (or use ShareBar) and the
+ * recipient opens the same team with the same names.
  */
 export function useNames() {
-  const [names, setNames] = useState<string[]>(load);
+  const initial = loadFromUrl();
+  const [names, setNames] = useState<string[]>(initial.names);
+  const [team, setTeam] = useState<string>(initial.team);
 
+  // Mirror state into the URL without adding history entries.
   useEffect(() => {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(names));
-    } catch {
-      /* storage may be unavailable (private mode); keep state in memory */
-    }
-  }, [names]);
+    if (typeof window === "undefined") return;
+    const query = encodeState({ team, names });
+    const url = query
+      ? `${window.location.pathname}?${query}`
+      : window.location.pathname;
+    window.history.replaceState(null, "", url);
+  }, [team, names]);
 
   const add = useCallback((raw: string) => {
     setNames((current) => addName(current, raw));
@@ -40,5 +38,5 @@ export function useNames() {
 
   const clear = useCallback(() => setNames([]), []);
 
-  return { names, add, remove, clear };
+  return { names, team, setTeam, add, remove, clear };
 }
