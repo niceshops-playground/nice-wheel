@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Wheel of Names — niceshops edition. Spin a wheel of names and pick a winner.",
   "engines": {
-    "node": ">=24"
+    "node": ">=24.15"
   },
   "scripts": {
     "dev": "vite",
