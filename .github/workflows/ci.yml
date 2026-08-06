@@ -1,8 +1,10 @@
 name: CI
 
+# Pull requests only. A `push: ["**"]` trigger ran a second, identical job for
+# every PR branch. Pushes to main stay covered by the deploy workflow, which
+# runs `npm test` and `npm run build` (= `tsc -b && vite build`) before
+# publishing, so tests and type-checking still gate what ships.
 on:
-  push:
-    branches: ["**"]
   pull_request:
 
 jobs:
