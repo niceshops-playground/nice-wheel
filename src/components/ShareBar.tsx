@@ -49,10 +49,11 @@ export function ShareBar({
       <button
         type="button"
         className="share-btn"
+        aria-label="Copy share link"
         onClick={copy}
         disabled={disabled || names.length === 0}
       >
-        {copied ? "Link copied!" : "Copy share link"}
+        {copied ? "Copied!" : "Copy link"}
       </button>
     </div>
   );

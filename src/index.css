@@ -135,13 +135,21 @@ body {
   min-width: 0;
 }
 
+/* Team names come from the URL and can be long — truncate rather than wrap or
+   run under the theme toggle. */
+.app__title h1,
+.app__title p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .app__title h1 {
   margin: 0;
   font-size: clamp(1.15rem, 4.5vw, 1.45rem);
   font-weight: 800;
   letter-spacing: -0.4px;
   line-height: 1.1;
-  white-space: nowrap;
   background: linear-gradient(135deg, var(--accent-deep), var(--accent-light));
   -webkit-background-clip: text;
   background-clip: text;
@@ -182,7 +190,10 @@ body {
 /* ---------- Layout ---------- */
 .app__main {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  /* minmax(0, …), not a bare `1fr`: `1fr` cannot shrink below its content's
+     min-content width, and the panel's inputs carry a wide intrinsic width —
+     that pushed the grid past the viewport on phones. */
+  grid-template-columns: minmax(0, 1fr) 340px;
   gap: clamp(24px, 4vw, 40px);
   align-items: start;
 }
@@ -237,12 +248,14 @@ body {
   will-change: transform;
 }
 
+/* Pointer and hub are sized in % of the wheel so they stay in proportion when
+   the wheel shrinks on phones (they used to be fixed px and grew relatively). */
 .wheel__pointer {
   position: absolute;
-  top: -8px;
+  top: -2.4%;
   left: 50%;
-  width: 30px;
-  height: 38px;
+  width: 8.5%;
+  height: 11%;
   transform: translateX(-50%);
   background: linear-gradient(180deg, var(--accent-light), var(--accent-deep));
   clip-path: polygon(50% 100%, 0 0, 100% 0);
@@ -255,8 +268,8 @@ body {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 66px;
-  height: 66px;
+  width: 18.5%;
+  height: 18.5%;
   transform: translate(-50%, -50%);
   border-radius: 50%;
   display: grid;
@@ -268,6 +281,12 @@ body {
     0 8px 18px rgba(0, 0, 0, 0.25),
     inset 0 0 0 2px rgba(232, 98, 14, 0.12);
   z-index: 2;
+}
+
+/* The hub logo scales with the hub rather than its fixed `size` prop. */
+.wheel__hub svg {
+  width: 40%;
+  height: auto;
 }
 
 /* ---------- Spin button ---------- */
@@ -687,7 +706,7 @@ body {
   }
 
   .app__main {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
 
