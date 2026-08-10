@@ -32,7 +32,28 @@ jobs:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
+      - name: Skip bumps GITHUB_TOKEN may not merge
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # GITHUB_TOKEN is a GitHub App token, and an App may only touch
+          # .github/workflows/** while holding the `workflows` permission — which a workflow
+          # `permissions:` block cannot grant (it is a PAT/App-install scope, not one of the
+          # keys Actions accepts). So a bump that edits a workflow file can never be merged
+          # from here; `/tidy` merges those with a token that has the scope.
+          files=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" \
+            --jq '.[].filename')
+          if grep -q '^\.github/workflows/' <<< "$files"; then
+            echo "::notice::#$PR_NUMBER touches .github/workflows/** — GITHUB_TOKEN cannot merge it, left for /tidy"
+            echo 'mergeable=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'mergeable=true' >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Enable auto-merge
+        if: steps.gate.outputs.mergeable == 'true'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
