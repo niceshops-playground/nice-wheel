@@ -1,13 +1,25 @@
 name: Dependabot auto-merge
 
-# Dependency bumps should not wait on a human review. This approves them and
-# queues an auto-merge, so they land by themselves once CI is green — and only
-# then, because auto-merge respects the required status checks on main.
+# Dependency bumps should not wait on a human. This queues an auto-merge for them, so they
+# land by themselves once CI is green — and only then, because auto-merge waits for the
+# required status checks on main (the `test` job).
 #
-# `pull_request_target` is deliberate: on a `pull_request` run from Dependabot
-# the GITHUB_TOKEN is read-only, so it could neither approve nor merge. This
-# workflow never checks out the pull request, so none of its code ever runs
-# here — the steps only talk to the GitHub API.
+# There is deliberately no approving step. The niceshops-playground org policy forbids
+# GitHub Actions from creating or approving pull requests, so `gh pr review --approve`
+# answers 409 no matter how the repo itself is configured:
+#
+#   The organization does not allow GitHub Actions to create or approve pull requests
+#
+# Instead, main carries no review requirement at all and relies on the required `test`
+# check to gate merges. That means this workflow's only job is to press the auto-merge
+# button — but it also means the required check is the *only* thing standing between a
+# Dependabot pull request and main. Do not remove it from the branch protection without
+# removing this workflow too.
+#
+# `pull_request_target` is deliberate: on a `pull_request` run from Dependabot the
+# GITHUB_TOKEN is read-only, so it could not enable auto-merge. This workflow never checks
+# out the pull request, so none of its code ever runs here — the step only talks to the
+# GitHub API.
 on:
   pull_request_target:
 
@@ -20,11 +32,6 @@ jobs:
     if: github.event.pull_request.user.login == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Approve
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Enable auto-merge
         run: gh pr merge --auto --squash "$PR_URL"
         env:
