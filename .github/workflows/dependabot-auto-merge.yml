@@ -1,0 +1,32 @@
+name: Dependabot auto-merge
+
+# Dependency bumps should not wait on a human review. This approves them and
+# queues an auto-merge, so they land by themselves once CI is green — and only
+# then, because auto-merge respects the required status checks on main.
+#
+# `pull_request_target` is deliberate: on a `pull_request` run from Dependabot
+# the GITHUB_TOKEN is read-only, so it could neither approve nor merge. This
+# workflow never checks out the pull request, so none of its code ever runs
+# here — the steps only talk to the GitHub API.
+on:
+  pull_request_target:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Approve
+        run: gh pr review --approve "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
