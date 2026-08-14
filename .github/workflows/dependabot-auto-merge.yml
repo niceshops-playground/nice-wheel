@@ -24,6 +24,7 @@ on:
   pull_request_target:
 
 permissions:
+  actions: write # dispatch the deploy after the merge — see the deploy step below
   contents: write
   pull-requests: write
 
@@ -58,3 +59,27 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # An auto-merge enabled by GITHUB_TOKEN pushes the squash commit as github-actions[bot],
+      # and a GITHUB_TOKEN push fires no events at all — so the deploy workflow's `push`
+      # trigger never runs and main sits undeployed until something else lands.
+      # `workflow_dispatch` is one of the two events GITHUB_TOKEN may fire, so wait for the
+      # merge and dispatch the deploy. `-R` is not optional: with no checkout in this job,
+      # `gh` would infer the repository from git and fail with "not a git repository".
+      - name: Deploy main once the merge lands
+        if: steps.gate.outputs.mergeable == 'true'
+        timeout-minutes: 20
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for _ in $(seq 60); do
+            state=$(gh pr view "$PR_URL" --json state --jq .state)
+            case "$state" in
+              MERGED) gh workflow run deploy.yml -R "$GITHUB_REPOSITORY" --ref main; exit 0 ;;
+              CLOSED) echo "PR closed without merging — nothing to deploy"; exit 0 ;;
+            esac
+            sleep 15
+          done
+          echo "::error::$PR_URL still not merged after 15 min — deploy not dispatched"
+          exit 1
