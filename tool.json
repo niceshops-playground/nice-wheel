@@ -1,0 +1,10 @@
+{
+  "name": "Nice Wheel",
+  "description": "Glücksrad: Namen eintragen, drehen, Gewinner ziehen",
+  "url": "https://niceshops-playground.github.io/nice-wheel/",
+  "category": "Team",
+  "type": "web",
+  "icon": "🎡",
+  "owner": "@dmetzner",
+  "tags": ["zufall", "auslosung", "team"]
+}
